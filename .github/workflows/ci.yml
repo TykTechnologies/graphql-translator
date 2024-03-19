@@ -45,7 +45,6 @@ jobs:
       - name: Run linters
         uses: golangci/golangci-lint-action@v3
         with:
-          working-directory: v2
           version: v1.54.2
           args: --timeout=3m
   ci:
