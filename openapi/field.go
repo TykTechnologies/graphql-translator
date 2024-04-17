@@ -40,10 +40,10 @@ func (c *converter) makeTypeRefFromSchemaRef(schemaRef *openapi3.SchemaRef, name
 		return nil, err
 	}
 
-	switch schemaRef.Value.Type {
-	case "object":
+	switch {
+	case schemaRef.Value.Type.Is(openapi3.TypeObject):
 		err = c.processObject(schemaRef)
-	case "array":
+	case schemaRef.Value.Type.Is(openapi3.TypeArray):
 		err = c.processArrayWithFullTypeName(graphQLTypeName, schemaRef)
 	}
 	if err != nil {
@@ -59,7 +59,7 @@ func (c *converter) makeTypeRefFromSchemaRef(schemaRef *openapi3.SchemaRef, name
 		typeRef = convertToNonNull(&typeRef)
 	}
 
-	if schemaRef.Value.Type == "array" {
+	if schemaRef.Value.Type.Is(openapi3.TypeArray) {
 		typeRef.OfType = &introspection.TypeRef{Kind: 3, Name: &graphQLTypeName}
 	}
 	return &typeRef, nil

@@ -1,10 +1,11 @@
 package openapi
 
 import (
-	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
-	"github.com/getkin/kin-openapi/openapi3"
 	"net/http"
 	"sort"
+
+	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
+	"github.com/getkin/kin-openapi/openapi3"
 )
 
 // getInputValueFromParameter retrieves the input value from the given parameter and adds it to the field arguments.
@@ -38,7 +39,7 @@ func (c *converter) tryMakeTypeNameFromOperation(status int, operation *openapi3
 	if responseRef != nil && responseRef.Value != nil {
 		mediaType := responseRef.Value.Content.Get("application/json")
 		if mediaType != nil && mediaType.Schema != nil && mediaType.Schema.Value != nil {
-			if mediaType.Schema.Value.Type == "object" {
+			if mediaType.Schema.Value.Type.Is(openapi3.TypeObject) {
 				return MakeTypeNameFromPathName(c.currentPathName)
 			}
 		}
@@ -95,7 +96,7 @@ func (c *converter) importMutationType() (*introspection.FullType, error) {
 		Name: "Mutation",
 	}
 
-	for pathName, pathItem := range c.openapi.Paths {
+	for pathName, pathItem := range c.openapi.Paths.Map() {
 		c.currentPathName = pathName
 		c.currentPathItem = pathItem
 		for _, method := range []string{http.MethodPost, http.MethodPut, http.MethodDelete} {
@@ -123,7 +124,7 @@ func (c *converter) importMutationType() (*introspection.FullType, error) {
 			}
 
 			typeName = toCamelIfNotPredefinedScalar(typeName)
-			typeRef, err := getTypeRef("object")
+			typeRef, err := getTypeRef(&openapi3.Types{openapi3.TypeObject})
 			if err != nil {
 				return nil, err
 			}
