@@ -80,4 +80,5 @@ components:
       properties:
         message:
           type: string
-      example: "A message describing the error"
+      example:
+        message: "Some Error Message"
