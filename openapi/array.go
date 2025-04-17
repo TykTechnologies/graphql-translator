@@ -31,14 +31,14 @@ func (c *converter) processArrayWithFullTypeName(fullTypeName string, schema *op
 		Name: fullTypeName,
 	}
 	typeOfElements := schema.Value.Items.Value.Type
-	if typeOfElements == "object" {
+	if typeOfElements.Is("object") {
 		err := c.processSchemaProperties(&ft, *schema.Value.Items.Value)
 		if err != nil {
 			return err
 		}
 	} else {
 		for _, item := range schema.Value.Items.Value.AllOf {
-			if item.Value.Type == "object" {
+			if item.Value.Type.Is("object") {
 				err := c.processSchemaProperties(&ft, *item.Value)
 				if err != nil {
 					return err

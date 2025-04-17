@@ -146,7 +146,7 @@ func (c *converter) getInputValue(name string, schema *openapi3.SchemaRef) (*int
 		typeRef = introspection.TypeRef{Kind: 7}
 	} else {
 		paramType := schema.Value.Type
-		if paramType == "array" {
+		if paramType.Is("array") {
 			paramType = schema.Value.Items.Value.Type
 		}
 
@@ -156,7 +156,7 @@ func (c *converter) getInputValue(name string, schema *openapi3.SchemaRef) (*int
 		}
 
 		gqlType = name
-		if paramType != "object" {
+		if !paramType.Is("object") {
 			gqlType, err = getPrimitiveGraphQLTypeName(paramType)
 			if err != nil {
 				return nil, err
