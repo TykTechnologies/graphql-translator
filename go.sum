@@ -1,5 +1,7 @@
 github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20240315095341-b464dd4dc1ce h1:qRRAhfGnsqRJJ4EiGE9K6zi3h1KwKJnpG1/4qI0o7WY=
 github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20240315095341-b464dd4dc1ce/go.mod h1:ZWio73jm6W96BcZGmGZlKGZ+JGfjAaTwTdLQbpSeJz8=
+github.com/TykTechnologies/kin-openapi v0.90.1-0.20250417085524-a1dc7dfcc5c2 h1:ZdwVrBRiXUiU4DGHQ3ZujCygCiTea8vsPvXIt5vl3v4=
+github.com/TykTechnologies/kin-openapi v0.90.1-0.20250417085524-a1dc7dfcc5c2/go.mod h1:5ACVjH19q2L40v+Pp10Z9VZJdCkFRx9UKCqRwBS1XcI=
 github.com/asyncapi/converter-go v0.0.0-20190802111537-d8459b2bd403 h1:HhobldPK/8Cnhliwl744pXSfyjtF956/vOJLyJ8mrXk=
 github.com/asyncapi/converter-go v0.0.0-20190802111537-d8459b2bd403/go.mod h1:mpJYWYy+USNiLENQxiyGgRc3qtFPxYSWdSd/eS+R6bo=
 github.com/asyncapi/parser-go v0.4.2 h1:+PPo+Sk/u9IPH3JklXFrPUQnr9LURwNJU5jfcLBBITc=
@@ -19,8 +21,6 @@ github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
-github.com/getkin/kin-openapi v0.115.0 h1:c8WHRLVY3G8m9jQTy0/DnIuljgRwTCB5twZytQS4JyU=
-github.com/getkin/kin-openapi v0.115.0/go.mod h1:l5e9PaFUo9fyLJCPGQeXI2ML8c3P8BHOEV2VaAVf/pc=
 github.com/go-openapi/jsonpointer v0.19.5 h1:gZr+CIYByUqjcgeLXnQu2gHYQC9o73G2XUeOFYEICuY=
 github.com/go-openapi/jsonpointer v0.19.5/go.mod h1:Pl9vOtqEWErmShwVjC8pYs9cog34VGT37dQOVbmoatg=
 github.com/go-openapi/swag v0.19.5 h1:lTz6Ys4CmqqCQmZPBlbQENR1/GucA2bzYTE12Pw4tFY=

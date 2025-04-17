@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
-	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/TykTechnologies/kin-openapi/openapi3"
 	"net/http"
 	"sort"
 )

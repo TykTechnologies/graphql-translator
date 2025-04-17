@@ -4,9 +4,9 @@ go 1.21.0
 
 require (
 	github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20240315095341-b464dd4dc1ce
+	github.com/TykTechnologies/kin-openapi v0.90.1-0.20250417085524-a1dc7dfcc5c2
 	github.com/asyncapi/parser-go v0.4.2
 	github.com/buger/jsonparser v1.1.1
-	github.com/getkin/kin-openapi v0.115.0
 	github.com/iancoleman/strcase v0.2.0
 	github.com/stretchr/testify v1.8.4
 )

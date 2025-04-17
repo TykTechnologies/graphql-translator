@@ -8,7 +8,7 @@ import (
 	"github.com/TykTechnologies/graphql-go-tools/pkg/ast"
 	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
 	"github.com/TykTechnologies/graphql-go-tools/pkg/operationreport"
-	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/TykTechnologies/kin-openapi/openapi3"
 )
 
 var (
