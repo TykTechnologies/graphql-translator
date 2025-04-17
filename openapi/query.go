@@ -129,7 +129,7 @@ func (c *converter) importQueryTypeFieldParameter(field *introspection.Field, pa
 		gqlType = enumType.Name
 	} else {
 		paramType := schema.Value.Type
-		if paramType == "array" {
+		if paramType.Is("array") {
 			paramType = schema.Value.Items.Value.Type
 		}
 

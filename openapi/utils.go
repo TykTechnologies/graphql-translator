@@ -196,7 +196,7 @@ func extractFullTypeNameFromRef(ref string) (string, error) {
 }
 
 func makeTypeNameFromPropertyName(name string, schemaRef *openapi3.SchemaRef) (string, error) {
-	if schemaRef.Value.Type == "array" {
+	if schemaRef.Value.Type.Is("array") {
 		return makeListItemFromTypeName(name), nil
 	}
 	return "", fmt.Errorf("error while making type name from property name: %s is a unsupported type", name)

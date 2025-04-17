@@ -3,10 +3,11 @@ package openapi
 import (
 	"errors"
 	"fmt"
-	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
-	"github.com/getkin/kin-openapi/openapi3"
 	"net/http"
 	"sort"
+
+	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
+	"github.com/getkin/kin-openapi/openapi3"
 )
 
 func (c *converter) checkAndProcessOneOfKeyword(schema *openapi3.SchemaRef) error {
@@ -170,13 +171,13 @@ func (c *converter) checkAndProcessAnyOfKeyword(schema *openapi3.SchemaRef) erro
 }
 
 func (c *converter) processSchema(schema *openapi3.SchemaRef) error {
-	if schema.Value.Type == "array" {
+	if schema.Value.Type.Is("array") {
 		arrayOf := schema.Value.Items.Value.Type
-		if arrayOf == "string" || arrayOf == "integer" || arrayOf == "number" || arrayOf == "boolean" {
+		if arrayOf.Is("string") || arrayOf.Is("integer") || arrayOf.Is("number") || arrayOf.Is("boolean") {
 			return nil
 		}
 		return c.processArray(schema)
-	} else if schema.Value.Type == "object" {
+	} else if schema.Value.Type.Is("object") {
 		return c.processObject(schema)
 	}
 
