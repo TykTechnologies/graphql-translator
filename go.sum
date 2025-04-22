@@ -1,7 +1,7 @@
 github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20240315095341-b464dd4dc1ce h1:qRRAhfGnsqRJJ4EiGE9K6zi3h1KwKJnpG1/4qI0o7WY=
 github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20240315095341-b464dd4dc1ce/go.mod h1:ZWio73jm6W96BcZGmGZlKGZ+JGfjAaTwTdLQbpSeJz8=
-github.com/TykTechnologies/kin-openapi v0.90.1-0.20250417085524-a1dc7dfcc5c2 h1:ZdwVrBRiXUiU4DGHQ3ZujCygCiTea8vsPvXIt5vl3v4=
-github.com/TykTechnologies/kin-openapi v0.90.1-0.20250417085524-a1dc7dfcc5c2/go.mod h1:5ACVjH19q2L40v+Pp10Z9VZJdCkFRx9UKCqRwBS1XcI=
+github.com/TykTechnologies/kin-openapi v0.91.0 h1:9PI1Ll68MPRwl6OXWkvJW5YOYGg5pc8n0QTcPLtL7v8=
+github.com/TykTechnologies/kin-openapi v0.91.0/go.mod h1:5ACVjH19q2L40v+Pp10Z9VZJdCkFRx9UKCqRwBS1XcI=
 github.com/asyncapi/converter-go v0.0.0-20190802111537-d8459b2bd403 h1:HhobldPK/8Cnhliwl744pXSfyjtF956/vOJLyJ8mrXk=
 github.com/asyncapi/converter-go v0.0.0-20190802111537-d8459b2bd403/go.mod h1:mpJYWYy+USNiLENQxiyGgRc3qtFPxYSWdSd/eS+R6bo=
 github.com/asyncapi/parser-go v0.4.2 h1:+PPo+Sk/u9IPH3JklXFrPUQnr9LURwNJU5jfcLBBITc=
