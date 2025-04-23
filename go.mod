@@ -4,9 +4,9 @@ go 1.21.0
 
 require (
 	github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20240315095341-b464dd4dc1ce
+	github.com/TykTechnologies/kin-openapi v0.91.0
 	github.com/asyncapi/parser-go v0.4.2
 	github.com/buger/jsonparser v1.1.1
-	github.com/getkin/kin-openapi v0.89.0
 	github.com/iancoleman/strcase v0.2.0
 	github.com/stretchr/testify v1.8.4
 )
@@ -16,10 +16,13 @@ require (
 	github.com/asyncapi/spec-json-schemas/v2 v2.14.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.5 // indirect
-	github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e // indirect
+	github.com/invopop/yaml v0.1.0 // indirect
+	github.com/josharian/intern v1.0.0 // indirect
+	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
+	github.com/perimeterx/marshmallow v1.1.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190809123943-df4f5c81cb3b // indirect

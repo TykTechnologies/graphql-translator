@@ -2,7 +2,7 @@ package openapi
 
 import (
 	"errors"
-	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/TykTechnologies/kin-openapi/openapi3"
 )
 
 // tryExtractTypeName attempts to extract the GraphQL type name from the given OpenAPI schema reference.
