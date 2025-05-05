@@ -3,10 +3,11 @@ package openapi
 import (
 	"errors"
 	"fmt"
-	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
-	"github.com/TykTechnologies/kin-openapi/openapi3"
 	"net/http"
 	"sort"
+
+	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
+	"github.com/getkin/kin-openapi/openapi3"
 )
 
 func (c *converter) checkAndProcessOneOfKeyword(schema *openapi3.SchemaRef) error {
@@ -170,13 +171,13 @@ func (c *converter) checkAndProcessAnyOfKeyword(schema *openapi3.SchemaRef) erro
 }
 
 func (c *converter) processSchema(schema *openapi3.SchemaRef) error {
-	if schema.Value.Type == "array" {
+	if schema.Value.Type.Is(openapi3.TypeArray) {
 		arrayOf := schema.Value.Items.Value.Type
-		if arrayOf == "string" || arrayOf == "integer" || arrayOf == "number" || arrayOf == "boolean" {
+		if arrayOf.Is(openapi3.TypeString) || arrayOf.Is(openapi3.TypeInteger) || arrayOf.Is(openapi3.TypeNumber) || arrayOf.Is(openapi3.TypeBoolean) {
 			return nil
 		}
 		return c.processArray(schema)
-	} else if schema.Value.Type == "object" {
+	} else if schema.Value.Type.Is(openapi3.TypeObject) {
 		return c.processObject(schema)
 	}
 
@@ -199,7 +200,7 @@ func (c *converter) processSchema(schema *openapi3.SchemaRef) error {
 }
 
 func (c *converter) importFullTypes() ([]introspection.FullType, error) {
-	for pathName, pathItem := range c.openapi.Paths {
+	for pathName, pathItem := range c.openapi.Paths.Map() {
 		c.currentPathName = pathName
 		for _, method := range []string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodPut} {
 			operation := pathItem.GetOperation(method)
