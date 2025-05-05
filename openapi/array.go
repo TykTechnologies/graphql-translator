@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
-	"github.com/TykTechnologies/kin-openapi/openapi3"
+	"github.com/getkin/kin-openapi/openapi3"
 )
 
 func (c *converter) processArray(schema *openapi3.SchemaRef) error {
@@ -31,14 +31,14 @@ func (c *converter) processArrayWithFullTypeName(fullTypeName string, schema *op
 		Name: fullTypeName,
 	}
 	typeOfElements := schema.Value.Items.Value.Type
-	if typeOfElements == "object" {
+	if typeOfElements.Is(openapi3.TypeObject) {
 		err := c.processSchemaProperties(&ft, *schema.Value.Items.Value)
 		if err != nil {
 			return err
 		}
 	} else {
 		for _, item := range schema.Value.Items.Value.AllOf {
-			if item.Value.Type == "object" {
+			if item.Value.Type.Is(openapi3.TypeObject) {
 				err := c.processSchemaProperties(&ft, *item.Value)
 				if err != nil {
 					return err

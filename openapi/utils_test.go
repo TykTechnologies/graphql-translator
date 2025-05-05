@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/TykTechnologies/kin-openapi/openapi3"
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -73,11 +73,12 @@ func TestConvertStatusCode(t *testing.T) {
 }
 
 func TestGetResponseFromOperation(t *testing.T) {
+	responses := openapi3.NewResponses()
+	responses.Set("200", &openapi3.ResponseRef{Value: &openapi3.Response{}})
+	responses.Set("3XX", &openapi3.ResponseRef{Value: &openapi3.Response{}})
+
 	operation := &openapi3.Operation{
-		Responses: openapi3.Responses{
-			"200": &openapi3.ResponseRef{Value: &openapi3.Response{}},
-			"3XX": &openapi3.ResponseRef{Value: &openapi3.Response{}},
-		},
+		Responses: responses,
 	}
 	assert.NotNil(t, getResponseFromOperation(200, operation))
 	assert.NotNil(t, getResponseFromOperation(300, operation))
@@ -89,16 +90,16 @@ func Test_sanitizeResponses(t *testing.T) {
 	twoHundredRangeResponseRef := &openapi3.ResponseRef{Value: &openapi3.Response{}}
 	threeHundredRangeResponseRef := &openapi3.ResponseRef{Value: &openapi3.Response{}}
 
-	responses := openapi3.Responses{
-		"200": twoHundredResponseRef,
-		"2XX": twoHundredRangeResponseRef,
-		"3XX": threeHundredRangeResponseRef,
-	}
+	responses := openapi3.NewResponses()
+	responses.Set("200", twoHundredResponseRef)
+	responses.Set("2XX", twoHundredRangeResponseRef)
+	responses.Set("3XX", threeHundredRangeResponseRef)
+
 	result, err := sanitizeResponses(responses)
 	assert.NoError(t, err)
-	assert.Equal(t, 2, len(result))
-	assert.Equal(t, twoHundredResponseRef, result["200"])
-	assert.Equal(t, threeHundredRangeResponseRef, result["3XX"])
+	assert.Equal(t, 2, len(result.Map()))
+	assert.Equal(t, twoHundredResponseRef, result.Map()["200"])
+	assert.Equal(t, threeHundredRangeResponseRef, result.Map()["3XX"])
 }
 
 func Test_getValidResponse(t *testing.T) {
@@ -107,12 +108,11 @@ func Test_getValidResponse(t *testing.T) {
 	twoHundredRangeResponseRef := &openapi3.ResponseRef{Value: &openapi3.Response{}}
 	threeHundredRangeResponseRef := &openapi3.ResponseRef{Value: &openapi3.Response{}}
 
-	responses := openapi3.Responses{
-		"200": twoHundredResponseRef,
-		"202": twoHundredTwoResponseRef,
-		"2XX": twoHundredRangeResponseRef,
-		"3XX": threeHundredRangeResponseRef,
-	}
+	responses := openapi3.NewResponses()
+	responses.Set("200", twoHundredResponseRef)
+	responses.Set("202", twoHundredTwoResponseRef)
+	responses.Set("2XX", twoHundredRangeResponseRef)
+	responses.Set("3XX", threeHundredRangeResponseRef)
 
 	// OpenAPI-to-GraphQL translator mimics IBM/openapi-to-graphql tool. This tool accepts HTTP code 200-299 or 2XX
 	// as valid responses. Other status codes are simply ignored. Currently, we follow the same convention.

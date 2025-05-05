@@ -7,7 +7,7 @@ import (
 	"sort"
 
 	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
-	"github.com/TykTechnologies/kin-openapi/openapi3"
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/iancoleman/strcase"
 )
 
@@ -16,7 +16,7 @@ func (c *converter) importQueryType() (*introspection.FullType, error) {
 		Kind: introspection.OBJECT,
 		Name: "Query",
 	}
-	for pathName, pathItem := range c.openapi.Paths {
+	for pathName, pathItem := range c.openapi.Paths.Map() {
 		c.currentPathName = pathName
 		c.currentPathItem = pathItem
 		// We only support HTTP GET operation.
@@ -32,7 +32,7 @@ func (c *converter) importQueryType() (*introspection.FullType, error) {
 			}
 
 			var (
-				kind     string
+				kind     *openapi3.Types
 				typeName string
 			)
 			if schema == nil {
@@ -48,9 +48,9 @@ func (c *converter) importQueryType() (*introspection.FullType, error) {
 				}
 			}
 
-			if kind == "" {
+			if kind == nil {
 				// We assume that it is an object type.
-				kind = "object"
+				kind = &openapi3.Types{openapi3.TypeObject}
 			}
 
 			typeName = toCamelIfNotPredefinedScalar(typeName)
@@ -58,7 +58,7 @@ func (c *converter) importQueryType() (*introspection.FullType, error) {
 			if err != nil {
 				return nil, err
 			}
-			if kind == "array" {
+			if kind.Is(openapi3.TypeArray) {
 				// Array of some type
 				typeRef.OfType = &introspection.TypeRef{Kind: 3, Name: &typeName}
 			}
@@ -71,7 +71,6 @@ func (c *converter) importQueryType() (*introspection.FullType, error) {
 				queryField.Name = MakeFieldNameFromEndpoint(pathName)
 			}
 			queryType.Fields = append(queryType.Fields, *queryField)
-			//}
 		}
 	}
 	sort.Slice(queryType.Fields, func(i, j int) bool {
@@ -129,7 +128,7 @@ func (c *converter) importQueryTypeFieldParameter(field *introspection.Field, pa
 		gqlType = enumType.Name
 	} else {
 		paramType := schema.Value.Type
-		if paramType == "array" {
+		if paramType.Is(openapi3.TypeArray) {
 			paramType = schema.Value.Items.Value.Type
 		}
 
