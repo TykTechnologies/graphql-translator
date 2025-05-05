@@ -1,8 +1,6 @@
 module github.com/TykTechnologies/graphql-translator
 
-go 1.22.6
-
-toolchain go1.23.3
+go 1.23.3
 
 require (
 	github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20241212110213-7724a3b64bb2
