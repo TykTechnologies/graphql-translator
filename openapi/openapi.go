@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/TykTechnologies/graphql-go-tools/pkg/ast"
 	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
 	"github.com/TykTechnologies/graphql-go-tools/pkg/operationreport"
-	"github.com/TykTechnologies/kin-openapi/openapi3"
+	"github.com/getkin/kin-openapi/openapi3"
 )
 
 var (
@@ -123,9 +124,12 @@ func ParseOpenAPIDocument(input []byte) (*openapi3.T, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Validate the document
 	if err = document.Validate(loader.Context); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("validation error: %w", err)
 	}
+
 	return document, nil
 }
 

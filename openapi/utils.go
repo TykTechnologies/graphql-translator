@@ -9,7 +9,7 @@ import (
 
 	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
 	"github.com/TykTechnologies/graphql-go-tools/pkg/lexer/literal"
-	"github.com/TykTechnologies/kin-openapi/openapi3"
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/iancoleman/strcase"
 )
 
@@ -120,14 +120,14 @@ func isValidResponse(status int) bool {
 
 // __TypeKind of introspection is an unexported type. In order to overcome the problem,
 // this function creates and returns a TypeRef for a given kind. kind is a AsyncAPI type.
-func getTypeRef(kind string) (introspection.TypeRef, error) {
+func getTypeRef(kind *openapi3.Types) (introspection.TypeRef, error) {
 	// See introspection_enum.go
-	switch kind {
-	case "string", "integer", "number", "boolean":
+	switch {
+	case kind.Is(openapi3.TypeString), kind.Is(openapi3.TypeInteger), kind.Is(openapi3.TypeNumber), kind.Is(openapi3.TypeBoolean):
 		return introspection.TypeRef{Kind: 0}, nil
-	case "object":
+	case kind.Is(openapi3.TypeObject):
 		return introspection.TypeRef{Kind: 3}, nil
-	case "array":
+	case kind.Is(openapi3.TypeArray):
 		return introspection.TypeRef{Kind: 1}, nil
 	}
 	return introspection.TypeRef{}, fmt.Errorf("unknown type: %s", kind)
@@ -158,29 +158,29 @@ func getOperationDescription(operation *openapi3.Operation) string {
 	return strings.TrimSpace(sb.String())
 }
 
-func getParamTypeRef(kind string) (introspection.TypeRef, error) {
+func getParamTypeRef(kind *openapi3.Types) (introspection.TypeRef, error) {
 	// See introspection_enum.go
-	switch kind {
-	case "string", "integer", "number", "boolean":
+	switch {
+	case kind.Is(openapi3.TypeString), kind.Is(openapi3.TypeInteger), kind.Is(openapi3.TypeNumber), kind.Is(openapi3.TypeBoolean):
 		return introspection.TypeRef{Kind: 0}, nil
-	case "object":
+	case kind.Is(openapi3.TypeObject):
 		// InputType
 		return introspection.TypeRef{Kind: 7}, nil
-	case "array":
+	case kind.Is(openapi3.TypeArray):
 		return introspection.TypeRef{Kind: 1}, nil
 	}
 	return introspection.TypeRef{}, fmt.Errorf("unknown type: %s", kind)
 }
 
-func getPrimitiveGraphQLTypeName(openapiType string) (string, error) {
-	switch openapiType {
-	case "string":
+func getPrimitiveGraphQLTypeName(openapiType *openapi3.Types) (string, error) {
+	switch {
+	case openapiType.Is(openapi3.TypeString):
 		return string(literal.STRING), nil
-	case "integer":
+	case openapiType.Is(openapi3.TypeInteger):
 		return string(literal.INT), nil
-	case "number":
+	case openapiType.Is(openapi3.TypeNumber):
 		return string(literal.FLOAT), nil
-	case "boolean":
+	case openapiType.Is(openapi3.TypeBoolean):
 		return string(literal.BOOLEAN), nil
 	default:
 		return "", fmt.Errorf("%w: %s", errNotPrimitiveType, openapiType)
@@ -196,7 +196,7 @@ func extractFullTypeNameFromRef(ref string) (string, error) {
 }
 
 func makeTypeNameFromPropertyName(name string, schemaRef *openapi3.SchemaRef) (string, error) {
-	if schemaRef.Value.Type == "array" {
+	if schemaRef.Value.Type.Is(openapi3.TypeArray) {
 		return makeListItemFromTypeName(name), nil
 	}
 	return "", fmt.Errorf("error while making type name from property name: %s is a unsupported type", name)
@@ -216,7 +216,7 @@ func getJSONSchemaFromResponseRef(response *openapi3.ResponseRef) *openapi3.Sche
 	return schema
 }
 
-func findSchemaRef(responses openapi3.Responses) (int, *openapi3.SchemaRef, error) {
+func findSchemaRef(responses *openapi3.Responses) (int, *openapi3.SchemaRef, error) {
 	statusCode, responseRef, err := getValidResponse(responses)
 	if err != nil {
 		return 0, nil, err
@@ -276,7 +276,12 @@ func convertStatusCode(statusCode string) (int, error) {
 // If a response with the given status code is not found, it tries to find the range for the status
 // code and returns the response for that range.
 func getResponseFromOperation(status int, operation *openapi3.Operation) *openapi3.ResponseRef {
-	response := operation.Responses.Get(status)
+	if operation == nil || operation.Responses == nil {
+		return nil
+	}
+	responses := operation.Responses.Map()
+
+	response := responses[strconv.Itoa(status)]
 	if response != nil {
 		return response
 	}
@@ -287,7 +292,7 @@ func getResponseFromOperation(status int, operation *openapi3.Operation) *openap
 		// a response for the given status code.
 		return nil
 	}
-	return operation.Responses[statusCodeRange]
+	return responses[statusCodeRange]
 }
 
 // isStatusCodeRange checks if the given statusCode is a valid status code range.
@@ -301,19 +306,22 @@ func isStatusCodeRange(statusCode string) bool {
 
 // sanitizeResponses cleans up responses. If a response range is defined using an
 // explicit code, the explicit code definition takes precedence over the range definition for that code.
-func sanitizeResponses(responses openapi3.Responses) (openapi3.Responses, error) {
+func sanitizeResponses(responses *openapi3.Responses) (*openapi3.Responses, error) {
 	// OpenAPI specification:
 	//
 	// To define a range of response codes, you may use the following range definitions:
 	// 1XX, 2XX, 3XX, 4XX, and 5XX.
 	// If a response range is defined using an explicit code, the explicit code definition
-	//takes precedence over the range definition for that code.
+	// takes precedence over the range definition for that code.
+	result := openapi3.NewResponses()
+	result.Delete("default")
 
-	result := make(openapi3.Responses)
 	occupiedStatusCodeRange := make(map[string]struct{})
 
+	responsesMap := responses.Map()
+
 	// First pass, select the explicit code definitions.
-	for stringStatusCode, response := range responses {
+	for stringStatusCode, response := range responsesMap {
 		// 'default' is not a valid response, ignore it.
 		if stringStatusCode == "default" {
 			continue
@@ -324,7 +332,7 @@ func sanitizeResponses(responses openapi3.Responses) (openapi3.Responses, error)
 			continue
 		}
 
-		result[stringStatusCode] = response
+		result.Set(stringStatusCode, response)
 
 		// Calculate the occupied status code range.
 		statusCode, err := strconv.Atoi(stringStatusCode)
@@ -339,7 +347,7 @@ func sanitizeResponses(responses openapi3.Responses) (openapi3.Responses, error)
 	}
 
 	// Use the status code ranges if not occupied.
-	for stringStatusCode, response := range responses {
+	for stringStatusCode, response := range responsesMap {
 		// 'default' is not a valid response, ignore it.
 		if stringStatusCode == "default" {
 			continue
@@ -349,7 +357,7 @@ func sanitizeResponses(responses openapi3.Responses) (openapi3.Responses, error)
 			continue
 		}
 		if _, ok := occupiedStatusCodeRange[stringStatusCode]; !ok {
-			result[stringStatusCode] = response
+			result.Set(stringStatusCode, response)
 		}
 	}
 
@@ -361,7 +369,7 @@ func sanitizeResponses(responses openapi3.Responses) (openapi3.Responses, error)
 //
 // OpenAPI-to-GraphQL translator mimics IBM/openapi-to-graphql tool. This tool accepts HTTP code 200-299 or 2XX
 // as valid responses. Other status codes are simply ignored. Currently, we follow the same convention.
-func getValidResponse(responses openapi3.Responses) (int, *openapi3.ResponseRef, error) {
+func getValidResponse(responses *openapi3.Responses) (int, *openapi3.ResponseRef, error) {
 	responses, err := sanitizeResponses(responses)
 	if err != nil {
 		return 0, nil, err
@@ -369,7 +377,7 @@ func getValidResponse(responses openapi3.Responses) (int, *openapi3.ResponseRef,
 
 	var validStatusCodes []int
 	validResponseRefs := make(map[int]*openapi3.ResponseRef)
-	for stringStatusCode, responseRef := range responses {
+	for stringStatusCode, responseRef := range responses.Map() {
 		statusCode, err := convertStatusCode(stringStatusCode)
 		if err != nil {
 			return 0, nil, err

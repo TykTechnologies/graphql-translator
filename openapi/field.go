@@ -5,7 +5,7 @@ import (
 	"sort"
 
 	"github.com/TykTechnologies/graphql-go-tools/pkg/introspection"
-	"github.com/TykTechnologies/kin-openapi/openapi3"
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/iancoleman/strcase"
 )
 
@@ -29,6 +29,18 @@ func (c *converter) makeTypeRefFromSchemaRef(schemaRef *openapi3.SchemaRef, name
 		return &typeRef, nil
 	}
 
+	if schemaRef.Value.Type.Is(openapi3.TypeString) || schemaRef.Value.Type.Is(openapi3.TypeInteger) || schemaRef.Value.Type.Is(openapi3.TypeNumber) || schemaRef.Value.Type.Is(openapi3.TypeBoolean) {
+		typeName, err := getPrimitiveGraphQLTypeName(schemaRef.Value.Type)
+		if err != nil {
+			return nil, err
+		}
+		typeRef := introspection.TypeRef{Kind: 0, Name: &typeName}
+		if required {
+			typeRef = convertToNonNull(&typeRef)
+		}
+		return &typeRef, nil
+	}
+
 	graphQLTypeName, err := c.getGraphQLTypeName(schemaRef, inputType)
 	if errors.Is(err, errTypeNameExtractionImpossible) {
 		graphQLTypeName, err = makeTypeNameFromPropertyName(name, schemaRef)
@@ -40,10 +52,10 @@ func (c *converter) makeTypeRefFromSchemaRef(schemaRef *openapi3.SchemaRef, name
 		return nil, err
 	}
 
-	switch schemaRef.Value.Type {
-	case "object":
+	switch {
+	case schemaRef.Value.Type.Is(openapi3.TypeObject):
 		err = c.processObject(schemaRef)
-	case "array":
+	case schemaRef.Value.Type.Is(openapi3.TypeArray):
 		err = c.processArrayWithFullTypeName(graphQLTypeName, schemaRef)
 	}
 	if err != nil {
@@ -59,7 +71,7 @@ func (c *converter) makeTypeRefFromSchemaRef(schemaRef *openapi3.SchemaRef, name
 		typeRef = convertToNonNull(&typeRef)
 	}
 
-	if schemaRef.Value.Type == "array" {
+	if schemaRef.Value.Type.Is(openapi3.TypeArray) {
 		typeRef.OfType = &introspection.TypeRef{Kind: 3, Name: &graphQLTypeName}
 	}
 	return &typeRef, nil
