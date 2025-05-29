@@ -1,5 +1,5 @@
-github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20241212110213-7724a3b64bb2 h1:/B7Dmb35zO4392FACTKyVDH7XTQ0xAb80/M1GMk97Is=
-github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20241212110213-7724a3b64bb2/go.mod h1:NE9MYGcB5eWKW0OefGOjZZEPv6S20AQ0OTsO+npGR8I=
+github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20250527121326-5f5c91189896 h1:VT7wjr2ADq7Ei9ooh4NZyzb4KLD09lAqx8zkNstSoIs=
+github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20250527121326-5f5c91189896/go.mod h1:NE9MYGcB5eWKW0OefGOjZZEPv6S20AQ0OTsO+npGR8I=
 github.com/asyncapi/converter-go v0.0.0-20190802111537-d8459b2bd403 h1:HhobldPK/8Cnhliwl744pXSfyjtF956/vOJLyJ8mrXk=
 github.com/asyncapi/converter-go v0.0.0-20190802111537-d8459b2bd403/go.mod h1:mpJYWYy+USNiLENQxiyGgRc3qtFPxYSWdSd/eS+R6bo=
 github.com/asyncapi/parser-go v0.4.2 h1:+PPo+Sk/u9IPH3JklXFrPUQnr9LURwNJU5jfcLBBITc=

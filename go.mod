@@ -3,7 +3,7 @@ module github.com/TykTechnologies/graphql-translator
 go 1.23.3
 
 require (
-	github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20241212110213-7724a3b64bb2
+	github.com/TykTechnologies/graphql-go-tools v1.6.2-0.20250527121326-5f5c91189896
 	github.com/asyncapi/parser-go v0.4.2
 	github.com/buger/jsonparser v1.1.1
 	github.com/getkin/kin-openapi v0.132.0
